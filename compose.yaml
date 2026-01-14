@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: roadworks
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - road-net
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/roadworks
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: secret
+
+      - "8080:8080"
+    networks:
+      - road-net
+
+  map-server:
+    build:
+      context: mock-map-server
+      dockerfile: Dockerfile
+    ports:
+      - "8081:80"
+    networks:
+      - road-net
+
+volumes:
+  postgres-data:
+
+networks:
+  road-net:
