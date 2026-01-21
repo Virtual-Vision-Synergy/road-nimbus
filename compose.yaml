@@ -19,21 +19,12 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - postgres
-
+    environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/roadworks
       SPRING_DATASOURCE_USERNAME: myuser
       SPRING_DATASOURCE_PASSWORD: secret
-
-      - "8080:8080"
-    networks:
-      - road-net
-
-  map-server:
-    build:
-      context: mock-map-server
-      dockerfile: Dockerfile
     ports:
-      - "8081:80"
+      - "8080:8080"
     networks:
       - road-net
 
